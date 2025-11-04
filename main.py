@@ -38,5 +38,34 @@ def run():
     print("\n✅ Claude Response:\n")
     print(reply["content"])
 
+
+# -------------------------------
+# Terminal Chat Mode
+# -------------------------------
+def chat():
+    print("\n🤖 Claude Terminal Chat")
+    print("Type 'exit' or 'quit' to stop.\n")
+
+    conversation = []  # Store conversation history
+
+    while True:
+        user_input = input("🧑 You: ").strip()
+        
+        if user_input.lower() in ["exit", "quit", "q"]:
+            print("\n👋 Exiting chat. Goodbye!\n")
+            break
+
+        conversation.append({"role": "user", "content": user_input})
+
+        reply = assistant.generate_reply(messages=conversation)
+        ai_response = reply["content"]
+
+        conversation.append({"role": "assistant", "content": ai_response})
+
+        print(f"\n🤖 Claude:\n{ai_response}\n")
+
+
 if __name__ == "__main__":
-    run()
+    # Comment out run() and enable chat()
+    # run()
+    chat()
