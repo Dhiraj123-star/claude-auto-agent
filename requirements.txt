@@ -3,3 +3,4 @@ anthropic
 python-dotenv
 fastapi
 uvicorn
+streamlit
