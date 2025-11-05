@@ -1,3 +1,5 @@
 autogen
 anthropic
 python-dotenv
+fastapi
+uvicorn
