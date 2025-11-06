@@ -1,33 +1,60 @@
+Got it — we must **update the README to match the latest architecture**, which now includes:
 
-# 🤖 ClaudeAutoAgent — TUI Edition
+* **FastAPI backend (main.py)**
+* **Agents defined in agents.py**
+* **Chat orchestration in chat.py**
+* **Streamlit UI (app.py)** instead of TUI
 
-A simple **agentic AI console application** built using **Microsoft AutoGen** and **Anthropic Claude**, now enhanced with a **TUI (Terminal User Interface)**.
+Here is the **fully updated README**, clean and complete:
 
-This version uses a **Supervisor → Worker** collaborative agent approach and allows you to **chat interactively in the terminal**.
+---
+
+# 🤖 ClaudeAutoAgent — Web UI (Streamlit Edition)
+
+A **collaborative AI agent system** powered by **Microsoft AutoGen** and **Anthropic Claude**, now with a **modern Streamlit web interface**.
+
+This version uses a **Supervisor → Worker agent collaboration** and provides a **simple chat interface** in the browser.
 
 ---
 
 ## ✨ Features
 
-* **Interactive TUI chat mode** (type messages, get Claude responses)
-* **Two-agent setup:**
+* 🌐 **Web-based UI** built using **Streamlit**
+* 🧠 **Two-Agent Collaboration**
 
-  * **Supervisor Agent:** Interprets your request
-  * **Worker Agent:** Executes reasoning + generates response
-* Runs fully in **terminal**, no UI libraries required
-* Uses **Claude (Anthropic API)** models
-* Clean, minimal, extendable code
+  * **Supervisor Agent** → interprets tasks
+  * **Worker Agent** → reasons + generates final answer
+* 🔄 **FastAPI backend** to run structured agent communication
+* 🔐 Uses **Claude (Anthropic API)** models
+* 🧱 Clean architecture, simple to extend
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Component         | Purpose             |
-| ----------------- | ------------------- |
-| **Python 3.10+**  | Runtime             |
-| **autogen**       | Agent orchestration |
-| **anthropic API** | Claude model access |
-| **python-dotenv** | API key management  |
+| Component         | Purpose                      |
+| ----------------- | ---------------------------- |
+| **Python 3.10+**  | Runtime environment          |
+| **autogen**       | Multi-agent orchestration    |
+| **anthropic API** | Claude model access          |
+| **FastAPI**       | Backend web service          |
+| **Streamlit**     | Web UI                       |
+| **python-dotenv** | Environment variable loading |
+
+---
+
+## 📁 Project Structure
+
+```
+ClaudeAutoAgent/
+│
+├── agents.py       # Defines worker & supervisor agents
+├── chat.py         # Handles agent-to-agent conversation logic
+├── main.py         # FastAPI backend server
+├── app.py          # Streamlit UI
+├── .env            # Stores ANTHROPIC_API_KEY
+└── requirements.txt
+```
 
 ---
 
@@ -44,7 +71,7 @@ cd ClaudeAutoAgent
 
 ```bash
 python -m venv venv
-source venv/bin/activate      # Mac/Linux
+source venv/bin/activate      # Mac / Linux
 venv\Scripts\activate         # Windows
 ```
 
@@ -56,80 +83,76 @@ uv pip install -r requirements.txt
 
 ### 4️⃣ Add Your Claude API Key
 
-Create a `.env` file in the project directory:
+Create a `.env` file:
 
 ```
-ANTHROPIC_API_KEY=your_real_claude_api_key_here
+ANTHROPIC_API_KEY=your_real_key_here
 ```
 
 ---
 
-## 🚀 Run the TUI Agent
+## 🚀 Running the Application
 
-Start chat mode:
+### Start Backend (FastAPI)
 
 ```bash
-python main.py
+uvicorn main:app --reload
 ```
 
-When the program runs, you'll enter **interactive mode**:
+Runs at:
 
 ```
-💬 Type anything to ask Claude.
-🔚 Type 'exit' to quit.
-
-You: 
+http://127.0.0.1:8000
 ```
 
-Example:
+### Start Frontend (Streamlit UI)
+
+```bash
+streamlit run app.py
+```
+
+Runs at:
 
 ```
-You: explain event-driven architecture in simple terms
-Claude (via agents): ...
-```
-
----
-
-## 🎨 How It Works (Architecture)
-
-```
-You (Terminal)
-    ↓
-Supervisor Agent  (interprets user intent)
-    ↓
-Worker Agent      (generates response using Claude)
-    ↓
-Response shown in terminal
+http://localhost:8501
 ```
 
 ---
 
-## 🧩 Extend the Agents
+## 🧠 How It Works
 
-| Feature              | How to Add                         |
-| -------------------- | ---------------------------------- |
-| Code execution       | Add a PythonToolAgent              |
-| Web search           | Add a SearchToolAgent              |
-| RAG / document QA    | Load embeddings + retriever        |
-| Multi-step workflows | Add message history to both agents |
+```
+User (Streamlit UI)
+      ↓
+   FastAPI
+      ↓
+Supervisor Agent  → interprets request
+      ↓
+Worker Agent      → generates detailed response
+      ↓
+Response returned to UI and displayed
+```
 
 ---
 
-## ⚙️ Recommended Model Settings
+## 🧩 Extending the System
 
-| Model             | Use Case                            |
-| ----------------- | ----------------------------------- |
-| `claude-4-5-haiku`  | Fast + cheap everyday reasoning     |
-| `claude-4-5-sonnet` | Better reasoning + writing          |
-| `claude-4-1-opus`   | Deep reasoning, long context, plans |
+| Feature to Add      | Code to Modify                     |
+| ------------------- | ---------------------------------- |
+| Code execution      | Add PythonToolAgent in `agents.py` |
+| Web search          | Integrate search tool agent        |
+| RAG / document QA   | Load embeddings + retriever        |
+| Multi-step planning | Maintain conversation history      |
 
 ---
 
 ## ⭐ Project Status
 
-✅ Minimal agent collaboration
-✅ Terminal chat UI
-⏳ Optional: Code execution agent
-⏳ Optional: RAG retrieval pipeline
+✅ Working Agent Collaboration
+✅ Streamlit Chat UI
+✅ FastAPI Integration
+⏳ Optional: Persistent chat history
+⏳ Optional: Tool-enabled worker agent
 
 ---
+
