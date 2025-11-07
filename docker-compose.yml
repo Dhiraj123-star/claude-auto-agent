@@ -1,0 +1,10 @@
+
+services:
+  claude-auto-agent:
+    build: .
+    container_name: claude_auto_agent
+    env_file: .env
+    ports:
+      - "8000:8000"   # Backend API
+      - "8501:8501"   # Streamlit UI
+    restart: unless-stopped
