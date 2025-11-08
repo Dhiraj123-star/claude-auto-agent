@@ -1,10 +1,20 @@
-
 services:
   claude-auto-agent:
     build: .
     container_name: claude_auto_agent
     env_file: .env
+    expose:
+      - "8000"
+      - "8501"
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx_proxy
+    depends_on:
+      - claude-auto-agent
     ports:
-      - "8000:8000"   # Backend API
-      - "8501:8501"   # Streamlit UI
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     restart: unless-stopped
