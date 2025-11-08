@@ -27,3 +27,6 @@ venv/
 # Build artifacts
 build/
 dist/
+
+#ignore cert files
+nginx/certs/
