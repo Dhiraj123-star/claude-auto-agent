@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: claude-auto-agent
+    runtime: docker          # use Docker runtime
+    repo: https://github.com/Dhiraj123-star/claude-auto-agent.git
+    branch: main
+    plan: free               # free tier
+    rootDir: .               # project root
+    healthCheckPath: /docs
+    envVars:
+      - key: ANTHROPIC_API_KEY
+        sync: false          # set manually in dashboard

@@ -23,5 +23,5 @@ ENV PYTHONUNBUFFERED=1
 EXPOSE 8000
 EXPOSE 8501
 
-# Use Gunicorn + Uvicorn workers for FastAPI
-CMD ["sh", "-c", "gunicorn main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000 & streamlit run app.py --server.port=8501 --server.address=0.0.0.0"]
+# ✅ Use start script instead of inline CMD
+CMD ["./start.sh"]
