@@ -19,10 +19,10 @@ COPY <<EOF /etc/supervisor/conf.d/app.conf
 nodaemon=true
 
 [program:api]
-command=gunicorn main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind 127.0.0.1:8000
+command=gunicorn main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:%(ENV_PORT)s
 
 [program:ui]
-command=streamlit run app.py --server.baseUrlPath=/ui --server.port=8501 --server.address=127.0.0.1
+command=streamlit run app.py --server.baseUrlPath=/ui --server.port=8501 --server.address=0.0.0.0
 
 [program:nginx]
 command=nginx -g "daemon off;"
@@ -30,5 +30,6 @@ EOF
 
 ENV PYTHONUNBUFFERED=1
 EXPOSE 8000
+EXPOSE 8501
 
 CMD ["/usr/bin/supervisord"]
