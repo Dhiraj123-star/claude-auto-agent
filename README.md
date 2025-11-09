@@ -1,62 +1,54 @@
 
-# 🤖 ClaudeAutoAgent — Web UI + Docker + SSL (Production Edition)
+# 🤖 ClaudeAutoAgent — Web UI + Docker + SSL (Production + CI/CD + Render Deployment)
 
-A **collaborative AI agent system** using **Microsoft AutoGen** and **Anthropic Claude**, served via a **FastAPI backend**, a **Streamlit UI**, and **NGINX reverse proxy with SSL** — fully packaged in **Docker**.
+A **collaborative AI agent system** using **Microsoft AutoGen** and **Anthropic Claude**, served via a **FastAPI backend** and **Streamlit UI**, now fully deployed with:
 
-This system uses a **Supervisor → Worker** collaboration pattern, where agents work together to produce better answers.
+- ✅ **GitHub Actions CI/CD**
+- ✅ **Render cloud deployment**
+- ✅ **Docker production build**
 
 ---
 
 ## ✨ Features
 
-* 🧠 Two-Agent Collaborative Reasoning (Supervisor + Worker)
-* 🌐 Streamlit Web Chat UI
-* ⚡ FastAPI Backend API
-* 🚀 Production runtime using **Gunicorn + Uvicorn workers**
-* 🔒 HTTPS Support (Self-Signed or Real SSL Certificates)
-* 🐳 Full **Docker & Docker Compose** deployment
-* 🔄 NGINX reverse proxy (routes API + UI)
+- 🧠 Two-Agent Cooperative Reasoning (Supervisor + Worker)
+- 🌐 Streamlit Web UI
+- ⚡ FastAPI Backend API
+- 🐳 Dockerized (Production)
+- 🔄 CI/CD using GitHub Actions (auto build + deploy)
+- ☁️ Render Deployment Support (via `render.yaml`)
 
 ---
 
-## 🛠️ Tech Stack
-
-| Component           | Purpose                   |
-| ------------------- | ------------------------- |
-| **Python 3.12**     | Runtime                   |
-| **FastAPI**         | Backend REST API          |
-| **Streamlit**       | Web chat UI               |
-| **Anthropic API**   | Claude model access       |
-| **AutoGen**         | Multi-agent Orchestration |
-| **Gunicorn**        | Production WSGI server    |
-| **Uvicorn Workers** | Async backend runtime     |
-| **NGINX**           | Reverse Proxy + SSL       |
-| **Docker**          | Containerization          |
-
----
-
-## 📁 Final Project Structure
+## 📁 Project Structure (Updated)
 
 ```
+
 ClaudeAutoAgent/
 │
-├── agents.py              # Defines Supervisor + Worker agents
-├── chat.py                # Agent conversation orchestration
-├── main.py                # FastAPI backend entrypoint
-├── app.py                 # Streamlit UI
+├── agents.py
+├── chat.py
+├── main.py               # FastAPI API
+├── app.py                # Streamlit UI
 │
 ├── requirements.txt
-├── .env                   # Stores ANTHROPIC_API_KEY
+├── .env
 │
-├── Dockerfile             # Multi-stage image build
-├── docker-compose.yml     # Runs API + UI + NGINX reverse proxy
-├── .dockerignore
+├── Dockerfile
+├── docker-compose.yml
+│
+├── render.yaml           # Render deployment config
+│
+├── .github/
+│   └── workflows/
+│       └── deploy.yml    # GitHub Actions CI/CD pipeline
 │
 └── nginx/
-    ├── nginx.conf         # Reverse proxy config
-    └── ssl/
-        ├── server.crt     # SSL Certificate
-        └── server.key     # SSL Private Key
+├── nginx.conf
+└── ssl/
+├── server.crt
+└── server.key
+
 ```
 
 ---
@@ -66,85 +58,87 @@ ClaudeAutoAgent/
 Create `.env`:
 
 ```
+
 ANTHROPIC_API_KEY=your_real_claude_key_here
-```
+
+````
 
 ---
 
-## 🐳 Running with Docker
-
-### 1️⃣ Build + Start Everything
+## 🚀 Docker Run (Local Development / Testing)
 
 ```bash
 docker compose up --build -d
+````
+
+Then visit:
+
+```
+http://localhost:8501  → Streamlit UI
+http://localhost:8000  → FastAPI API Docs
 ```
 
 ---
 
-## 🌍 Access the Application
+## 🔄 CI/CD — GitHub Actions (deploy.yml)
 
-| Service      | URL                                                                |
-| ------------ | ------------------------------------------------------------------ |
-| **Frontend** | [https://localhost](https://localhost)                             |
-| **Backend**  | [https://localhost/api/chat](https://localhost/api/chat) (proxied) |
+```
+.github/workflows/deploy.yml
+```
 
-> ✅ UI + API are now served securely via **NGINX over HTTPS**
+The workflow:
+
+* Triggers on `git push` to `main`
+* Builds Docker image
+* Deploys to Render
+
+*No manual deployment needed.*
 
 ---
 
-## 🔧 Generate Self-Signed SSL Certificate (local testing)
+## ☁️ Deployment — Render
 
-```bash
-mkdir -p nginx/ssl
-openssl req -x509 -nodes -newkey rsa:2048 \
-  -keyout nginx/ssl/server.key \
-  -out nginx/ssl/server.crt \
-  -days 365 \
-  -subj "/CN=localhost"
+The deployment is controlled by:
+
+```
+render.yaml
 ```
 
-Then restart:
+This file:
 
-```bash
-docker compose restart nginx
-```
+* Defines **Web Service**
+* Sets **runtime = Docker**
+* Injects **environment variables**
+* Exposes correct **PORT**
+
+Once linked with GitHub → Render auto redeploys on push ✅
 
 ---
 
-## 🧠 Architecture Flow
+## 🌍 Access After Deployment
 
 ```
-User (Browser / Streamlit UI)
-        ↓
-      NGINX  (SSL termination + routing)
-        ↓
-   FastAPI Backend  ←→  Supervisor Agent
-                        ↓
-                    Worker Agent (Claude)
-        ↓
-  Response returned to UI
+https://<your-service-name>.onrender.com/
 ```
 
----
+If backend and UI are combined:
 
-## 🧩 Extending the System
-
-| Feature             | Modify                       |
-| ------------------- | ---------------------------- |
-| Add RAG / Knowledge | Inject retriever into Worker |
-| Add tool calling    | Integrate PythonToolAgent    |
-| Memory / history    | Persist messages in storage  |
+* Opening the URL loads Streamlit UI
+* API available under `/api/...`
 
 ---
 
 ## ✅ Status
 
-| Feature                | Status    |
-| ---------------------- | --------- |
-| Two-Agent Reasoning    | ✅ Working |
-| Streamlit UI           | ✅ Working |
-| FastAPI Backend        | ✅ Working |
-| Docker Production Mode | ✅ Working |
-| SSL Reverse Proxy      | ✅ Working |
+| Component         | State                 |
+| ----------------- | --------------------- |
+| Agents            | ✅ Working             |
+| Streamlit UI      | ✅ Working             |
+| FastAPI Backend   | ✅ Working             |
+| Docker Build      | ✅ Working             |
+| CI/CD Pipeline    | ✅ Auto Deploy Working |
+| Render Deployment | ✅ Live                |
 
 ---
+
+
