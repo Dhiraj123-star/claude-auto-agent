@@ -1,158 +1,150 @@
-Got it — we must **update the README to match the latest architecture**, which now includes:
 
-* **FastAPI backend (main.py)**
-* **Agents defined in agents.py**
-* **Chat orchestration in chat.py**
-* **Streamlit UI (app.py)** instead of TUI
+# 🤖 ClaudeAutoAgent — Web UI + Docker + SSL (Production Edition)
 
-Here is the **fully updated README**, clean and complete:
+A **collaborative AI agent system** using **Microsoft AutoGen** and **Anthropic Claude**, served via a **FastAPI backend**, a **Streamlit UI**, and **NGINX reverse proxy with SSL** — fully packaged in **Docker**.
 
----
-
-# 🤖 ClaudeAutoAgent — Web UI (Streamlit Edition)
-
-A **collaborative AI agent system** powered by **Microsoft AutoGen** and **Anthropic Claude**, now with a **modern Streamlit web interface**.
-
-This version uses a **Supervisor → Worker agent collaboration** and provides a **simple chat interface** in the browser.
+This system uses a **Supervisor → Worker** collaboration pattern, where agents work together to produce better answers.
 
 ---
 
 ## ✨ Features
 
-* 🌐 **Web-based UI** built using **Streamlit**
-* 🧠 **Two-Agent Collaboration**
-
-  * **Supervisor Agent** → interprets tasks
-  * **Worker Agent** → reasons + generates final answer
-* 🔄 **FastAPI backend** to run structured agent communication
-* 🔐 Uses **Claude (Anthropic API)** models
-* 🧱 Clean architecture, simple to extend
+* 🧠 Two-Agent Collaborative Reasoning (Supervisor + Worker)
+* 🌐 Streamlit Web Chat UI
+* ⚡ FastAPI Backend API
+* 🚀 Production runtime using **Gunicorn + Uvicorn workers**
+* 🔒 HTTPS Support (Self-Signed or Real SSL Certificates)
+* 🐳 Full **Docker & Docker Compose** deployment
+* 🔄 NGINX reverse proxy (routes API + UI)
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Component         | Purpose                      |
-| ----------------- | ---------------------------- |
-| **Python 3.10+**  | Runtime environment          |
-| **autogen**       | Multi-agent orchestration    |
-| **anthropic API** | Claude model access          |
-| **FastAPI**       | Backend web service          |
-| **Streamlit**     | Web UI                       |
-| **python-dotenv** | Environment variable loading |
+| Component           | Purpose                   |
+| ------------------- | ------------------------- |
+| **Python 3.12**     | Runtime                   |
+| **FastAPI**         | Backend REST API          |
+| **Streamlit**       | Web chat UI               |
+| **Anthropic API**   | Claude model access       |
+| **AutoGen**         | Multi-agent Orchestration |
+| **Gunicorn**        | Production WSGI server    |
+| **Uvicorn Workers** | Async backend runtime     |
+| **NGINX**           | Reverse Proxy + SSL       |
+| **Docker**          | Containerization          |
 
 ---
 
-## 📁 Project Structure
+## 📁 Final Project Structure
 
 ```
 ClaudeAutoAgent/
 │
-├── agents.py       # Defines worker & supervisor agents
-├── chat.py         # Handles agent-to-agent conversation logic
-├── main.py         # FastAPI backend server
-├── app.py          # Streamlit UI
-├── .env            # Stores ANTHROPIC_API_KEY
-└── requirements.txt
+├── agents.py              # Defines Supervisor + Worker agents
+├── chat.py                # Agent conversation orchestration
+├── main.py                # FastAPI backend entrypoint
+├── app.py                 # Streamlit UI
+│
+├── requirements.txt
+├── .env                   # Stores ANTHROPIC_API_KEY
+│
+├── Dockerfile             # Multi-stage image build
+├── docker-compose.yml     # Runs API + UI + NGINX reverse proxy
+├── .dockerignore
+│
+└── nginx/
+    ├── nginx.conf         # Reverse proxy config
+    └── ssl/
+        ├── server.crt     # SSL Certificate
+        └── server.key     # SSL Private Key
 ```
 
 ---
 
-## 📦 Setup Instructions
+## 🔐 Environment Variables
 
-### 1️⃣ Clone the Project
-
-```bash
-git clone <your-repo-url>
-cd ClaudeAutoAgent
-```
-
-### 2️⃣ Create and Activate Virtual Environment
-
-```bash
-python -m venv venv
-source venv/bin/activate      # Mac / Linux
-venv\Scripts\activate         # Windows
-```
-
-### 3️⃣ Install Dependencies
-
-```bash
-uv pip install -r requirements.txt
-```
-
-### 4️⃣ Add Your Claude API Key
-
-Create a `.env` file:
+Create `.env`:
 
 ```
-ANTHROPIC_API_KEY=your_real_key_here
+ANTHROPIC_API_KEY=your_real_claude_key_here
 ```
 
 ---
 
-## 🚀 Running the Application
+## 🐳 Running with Docker
 
-### Start Backend (FastAPI)
-
-```bash
-uvicorn main:app --reload
-```
-
-Runs at:
-
-```
-http://127.0.0.1:8000
-```
-
-### Start Frontend (Streamlit UI)
+### 1️⃣ Build + Start Everything
 
 ```bash
-streamlit run app.py
-```
-
-Runs at:
-
-```
-http://localhost:8501
+docker compose up --build -d
 ```
 
 ---
 
-## 🧠 How It Works
+## 🌍 Access the Application
+
+| Service      | URL                                                                |
+| ------------ | ------------------------------------------------------------------ |
+| **Frontend** | [https://localhost](https://localhost)                             |
+| **Backend**  | [https://localhost/api/chat](https://localhost/api/chat) (proxied) |
+
+> ✅ UI + API are now served securely via **NGINX over HTTPS**
+
+---
+
+## 🔧 Generate Self-Signed SSL Certificate (local testing)
+
+```bash
+mkdir -p nginx/ssl
+openssl req -x509 -nodes -newkey rsa:2048 \
+  -keyout nginx/ssl/server.key \
+  -out nginx/ssl/server.crt \
+  -days 365 \
+  -subj "/CN=localhost"
+```
+
+Then restart:
+
+```bash
+docker compose restart nginx
+```
+
+---
+
+## 🧠 Architecture Flow
 
 ```
-User (Streamlit UI)
-      ↓
-   FastAPI
-      ↓
-Supervisor Agent  → interprets request
-      ↓
-Worker Agent      → generates detailed response
-      ↓
-Response returned to UI and displayed
+User (Browser / Streamlit UI)
+        ↓
+      NGINX  (SSL termination + routing)
+        ↓
+   FastAPI Backend  ←→  Supervisor Agent
+                        ↓
+                    Worker Agent (Claude)
+        ↓
+  Response returned to UI
 ```
 
 ---
 
 ## 🧩 Extending the System
 
-| Feature to Add      | Code to Modify                     |
-| ------------------- | ---------------------------------- |
-| Code execution      | Add PythonToolAgent in `agents.py` |
-| Web search          | Integrate search tool agent        |
-| RAG / document QA   | Load embeddings + retriever        |
-| Multi-step planning | Maintain conversation history      |
+| Feature             | Modify                       |
+| ------------------- | ---------------------------- |
+| Add RAG / Knowledge | Inject retriever into Worker |
+| Add tool calling    | Integrate PythonToolAgent    |
+| Memory / history    | Persist messages in storage  |
 
 ---
 
-## ⭐ Project Status
+## ✅ Status
 
-✅ Working Agent Collaboration
-✅ Streamlit Chat UI
-✅ FastAPI Integration
-⏳ Optional: Persistent chat history
-⏳ Optional: Tool-enabled worker agent
+| Feature                | Status    |
+| ---------------------- | --------- |
+| Two-Agent Reasoning    | ✅ Working |
+| Streamlit UI           | ✅ Working |
+| FastAPI Backend        | ✅ Working |
+| Docker Production Mode | ✅ Working |
+| SSL Reverse Proxy      | ✅ Working |
 
 ---
-
